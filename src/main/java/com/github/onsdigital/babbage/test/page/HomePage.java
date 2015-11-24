@@ -1,44 +1,26 @@
 package com.github.onsdigital.babbage.test.page;
 
 import com.github.onsdigital.babbage.test.page.base.PageObject;
-import com.github.onsdigital.babbage.test.page.base.PageObjectException;
-import org.openqa.selenium.By;
+import com.github.webdriverextensions.Bot;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
 
 public class HomePage extends PageObject {
 
-    By searchLocator = By.id("nav-search");
-
+    @FindBy(id = "nav-search")
     WebElement search;
 
-    public HomePage(WebDriver driver) {
-        super(driver);
-        checkForPrototypeModal();
-        initialisePage();
-    }
+    @FindBy(className = "btn-modal-continue")
+    WebElement modalContinue;
 
     private void checkForPrototypeModal() {
         try {
-            WebElement modalContinue = find(By.className("btn-modal-continue"));
             modalContinue.click();
         } catch (NoSuchElementException exception) {
             // do nothing - there is no modal to close.
         }
-
-    }
-
-    /**
-     * Check the expected elements are located in the page.
-     */
-    protected HomePage initialisePage() {
-        try {
-            search = waitAndFind(searchLocator);
-        } catch (NoSuchElementException exception) {
-            throw new PageObjectException("Failed to recognise the " + this.getClass().getSimpleName() + " contents.", exception);
-        }
-        return this;
     }
 
     /**
@@ -47,10 +29,21 @@ public class HomePage extends PageObject {
      * @param query - The query to search for.
      * @return - the search results page.
      */
-    public SearchResultsPage search(String query) {
-        search.sendKeys(query);
+    public void search(String query) {
+        Bot.type(query, search);
         search.submit();
-        return new SearchResultsPage(driver);
+    }
+
+    @Override
+    public void open(Object... objects) {
+        super.open();
+        checkForPrototypeModal();
+        assertIsOpen();
+    }
+
+    @Override
+    public void assertIsOpen(Object... objects) throws AssertionError {
+        Bot.assertIsDisplayed(search);
     }
 }
 
