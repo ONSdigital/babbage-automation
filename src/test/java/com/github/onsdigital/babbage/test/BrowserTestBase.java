@@ -2,20 +2,17 @@ package com.github.onsdigital.babbage.test;
 
 import com.github.webdriverextensions.Bot;
 import com.github.webdriverextensions.WebDriverExtensionsContext;
-import com.google.gson.GsonBuilder;
-import org.apache.commons.io.FileUtils;
+import com.github.webdriverextensions.internal.junitrunner.DriverPathLoader;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.UnreachableBrowserException;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -31,6 +28,12 @@ public class BrowserTestBase {
 
     @Parameterized.Parameter
     public DesiredCapabilities desiredCapabilities;
+
+
+    static {
+        // invoke the framework method to set the driver paths as expected.
+        DriverPathLoader.loadDriverPaths(null);
+    }
 
     public static Collection<Object[]> getParameters() {
         String browserStackUrl = Configuration.getBrowserStackUrl();
@@ -68,38 +71,44 @@ public class BrowserTestBase {
                 throw new Error("Could not connect to BrowserStack with the given URL: " + browserStackUrl, e);
             }
         } else {
-
-            final String chromeDriverUrl = "http://localhost:9515"; // standard port for chrome driver
-            try {
-                ChromeOptions options = new ChromeOptions();
-                DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
-                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(chromeDriverUrl), desiredCapabilities));
-            } catch (MalformedURLException e) {
-                throw new Error("Could not connect to ChromeDriver with the given URL: " + chromeDriverUrl, e);
-            } catch (UnreachableBrowserException exception) {
-                throw new Error("Could not find browser, are you running chrome driver?", exception);
-            }
-
+            WebDriverExtensionsContext.setDriver(new ChromeDriver(desiredCapabilities));
             Bot.driver().manage().window().setSize(new Dimension(1600, 1200));
+//            final String chromeDriverUrl = "http://localhost:9515"; // standard port for chrome driver
+//            try {
+//                ChromeOptions options = new ChromeOptions();
+//                DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
+//                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
+//                WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(chromeDriverUrl), desiredCapabilities));
+//            } catch (MalformedURLException e) {
+//                throw new Error("Could not connect to ChromeDriver with the given URL: " + chromeDriverUrl, e);
+//            } catch (UnreachableBrowserException exception) {
+//                throw new Error("Could not find browser, are you running chrome driver?", exception);
+//            }
+//
+
         }
     }
 
-    public static void main(String[] args) throws IOException {
-
-        // https://code.google.com/p/selenium/wiki/DesiredCapabilities
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("browser", "Chrome");
-        caps.setCapability("browser_version", "31.0");
-        caps.setCapability("os", "Windows");
-        caps.setCapability("os_version", "7");
-        caps.setCapability("resolution", "1600x1200");
-        caps.setCapability("browserstack.debug", "true");
-
-        final String json = new GsonBuilder().setPrettyPrinting().create().toJson(caps);
-
-        FileUtils.write(new File("src/test/resources/config.json"), json);
-
-
+    @After
+    public void tearDown() throws Exception {
+        Bot.driver().close();
     }
+
+    //    public static void main(String[] args) throws IOException {
+//
+//        // https://code.google.com/p/selenium/wiki/DesiredCapabilities
+//        DesiredCapabilities caps = new DesiredCapabilities();
+//        caps.setCapability("browser", "Chrome");
+//        caps.setCapability("browser_version", "31.0");
+//        caps.setCapability("os", "Windows");
+//        caps.setCapability("os_version", "7");
+//        caps.setCapability("resolution", "1600x1200");
+//        caps.setCapability("browserstack.debug", "true");
+//
+//        final String json = new GsonBuilder().setPrettyPrinting().create().toJson(caps);
+//
+//        FileUtils.write(new File("src/test/resources/config.json"), json);
+//
+//
+//    }
 }
