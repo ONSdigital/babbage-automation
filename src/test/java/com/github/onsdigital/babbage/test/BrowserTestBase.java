@@ -91,7 +91,7 @@ public class BrowserTestBase {
 
     @After
     public void tearDown() throws Exception {
-        Bot.driver().close();
+        Bot.driver().quit();
     }
 
     //    public static void main(String[] args) throws IOException {
