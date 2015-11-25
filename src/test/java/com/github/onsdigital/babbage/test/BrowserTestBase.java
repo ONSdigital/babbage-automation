@@ -52,6 +52,7 @@ public class BrowserTestBase {
 
     @Before
     public void setUp() throws Exception {
+        System.out.println("BrowserTestBase.setup");
         String browserStackUrl = Configuration.getBrowserStackUrl();
 
         if (StringUtils.isNotBlank(browserStackUrl)) {

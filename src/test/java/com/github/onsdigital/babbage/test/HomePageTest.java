@@ -18,4 +18,13 @@ public class HomePageTest extends BrowserTestBase {
         System.out.println(Bot.driver().getCurrentUrl());
         assertCurrentUrlContains("economy");
     }
+
+    @Test
+    public void searchCdidFromHomePage() {
+        Bot.open(homePage);
+        assertCurrentUrlContains("ons");
+        homePage.search("d7g7");
+        System.out.println(Bot.driver().getCurrentUrl());
+        assertCurrentUrlContains("economy/inflationandpriceindices/timeseries/d7g7");
+    }
 }
