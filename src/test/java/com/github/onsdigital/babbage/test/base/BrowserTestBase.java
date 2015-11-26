@@ -62,26 +62,26 @@ public class BrowserTestBase {
         chromeWindows.setCapability("browserstack.debug", "true");
         capabilities.add(new Object[]{chromeWindows});
 
-        DesiredCapabilities ipad = new DesiredCapabilities();
-        ipad.setCapability("browserName", "iPad");
-        ipad.setCapability("platform", "MAC");
-        ipad.setCapability("device", "iPad Air");
-        ipad.setCapability("browserstack.debug", "true");
-        capabilities.add(new Object[]{ipad});
-
-        DesiredCapabilities iphone = new DesiredCapabilities();
-        iphone.setCapability("browserName", "iPhone");
-        iphone.setCapability("platform", "MAC");
-        iphone.setCapability("device", "iPhone 5");
-        iphone.setCapability("browserstack.debug", "true");
-        capabilities.add(new Object[]{iphone});
-
-        DesiredCapabilities android = new DesiredCapabilities();
-        android.setCapability("browserName", "android");
-        android.setCapability("platform", "ANDROID");
-        android.setCapability("device", "Samsung Galaxy S5");
-        android.setCapability("browserstack.debug", "true");
-        capabilities.add(new Object[]{android});
+//        DesiredCapabilities ipad = new DesiredCapabilities();
+//        ipad.setCapability("browserName", "iPad");
+//        ipad.setCapability("platform", "MAC");
+//        ipad.setCapability("device", "iPad Air");
+//        ipad.setCapability("browserstack.debug", "true");
+//        capabilities.add(new Object[]{ipad});
+//
+//        DesiredCapabilities iphone = new DesiredCapabilities();
+//        iphone.setCapability("browserName", "iPhone");
+//        iphone.setCapability("platform", "MAC");
+//        iphone.setCapability("device", "iPhone 5");
+//        iphone.setCapability("browserstack.debug", "true");
+//        capabilities.add(new Object[]{iphone});
+//
+//        DesiredCapabilities android = new DesiredCapabilities();
+//        android.setCapability("browserName", "android");
+//        android.setCapability("platform", "ANDROID");
+//        android.setCapability("device", "Samsung Galaxy S5");
+//        android.setCapability("browserstack.debug", "true");
+//        capabilities.add(new Object[]{android});
 
         DesiredCapabilities ieWindows = new DesiredCapabilities();
         ieWindows.setCapability("browser", "IE");
