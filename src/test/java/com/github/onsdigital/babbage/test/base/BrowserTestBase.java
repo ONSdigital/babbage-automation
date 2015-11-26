@@ -54,29 +54,47 @@ public class BrowserTestBase {
     private static Collection<Object[]> getBrowserStackConfiguration() {
         List<Object[]> capabilities = new ArrayList<>();
 
-        DesiredCapabilities ieCapabilities = new DesiredCapabilities();
-        ieCapabilities.setCapability("browser", "Chrome");
-        ieCapabilities.setCapability("browser_version", "31.0");
-        ieCapabilities.setCapability("os", "Windows");
-        ieCapabilities.setCapability("os_version", "7");
-        ieCapabilities.setCapability("resolution", "1600x1200");
-        ieCapabilities.setCapability("browserstack.debug", "true");
-        capabilities.add(new Object[]{ieCapabilities});
+        DesiredCapabilities chromeWindows = new DesiredCapabilities();
+        chromeWindows.setCapability("browser", "Chrome");
+        chromeWindows.setCapability("browser_version", "31.0");
+        chromeWindows.setCapability("os", "Windows");
+        chromeWindows.setCapability("os_version", "7");
+        chromeWindows.setCapability("browserstack.debug", "true");
+        capabilities.add(new Object[]{chromeWindows});
 
-        DesiredCapabilities fireFoxWindows = new DesiredCapabilities();
-        fireFoxWindows.setCapability("browser", "IE");
-        ieCapabilities.setCapability("browser_version", "9.0");
-        fireFoxWindows.setCapability("os", "Windows");
-        fireFoxWindows.setCapability("os_version", "7");
-        fireFoxWindows.setCapability("resolution", "1600x1200");
-        fireFoxWindows.setCapability("browserstack.debug", "true");
-        capabilities.add(new Object[]{fireFoxWindows});
+        DesiredCapabilities ipad = new DesiredCapabilities();
+        ipad.setCapability("browserName", "iPad");
+        ipad.setCapability("platform", "MAC");
+        ipad.setCapability("device", "iPad Air");
+        ipad.setCapability("browserstack.debug", "true");
+        capabilities.add(new Object[]{ipad});
+
+        DesiredCapabilities iphone = new DesiredCapabilities();
+        iphone.setCapability("browserName", "iPhone");
+        iphone.setCapability("platform", "MAC");
+        iphone.setCapability("device", "iPhone 5");
+        iphone.setCapability("browserstack.debug", "true");
+        capabilities.add(new Object[]{iphone});
+
+        DesiredCapabilities android = new DesiredCapabilities();
+        android.setCapability("browserName", "android");
+        android.setCapability("platform", "ANDROID");
+        android.setCapability("device", "Samsung Galaxy S5");
+        android.setCapability("browserstack.debug", "true");
+        capabilities.add(new Object[]{android});
+
+        DesiredCapabilities ieWindows = new DesiredCapabilities();
+        ieWindows.setCapability("browser", "IE");
+        ieWindows.setCapability("browser_version", "9.0");
+        ieWindows.setCapability("os", "Windows");
+        ieWindows.setCapability("os_version", "7");
+        ieWindows.setCapability("browserstack.debug", "true");
+        capabilities.add(new Object[]{ieWindows});
 
         DesiredCapabilities safariOsx = new DesiredCapabilities();
         safariOsx.setCapability("browser", "safari");
         safariOsx.setCapability("os", "OS X");
         safariOsx.setCapability("os_version", "Yosemite");
-        safariOsx.setCapability("resolution", "1600x1200");
         safariOsx.setCapability("browserstack.debug", "true");
         capabilities.add(new Object[]{safariOsx});
 
