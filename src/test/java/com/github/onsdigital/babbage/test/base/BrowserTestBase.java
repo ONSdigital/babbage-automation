@@ -90,17 +90,17 @@ public class BrowserTestBase {
 
         if (StringUtils.isNotBlank(browserStackUrl)) {
 
-            // todo: read different capabilities from json config file.
-            DesiredCapabilities caps = new DesiredCapabilities();
-            caps.setCapability("browser", "Chrome");
-            caps.setCapability("browser_version", "31.0");
-            caps.setCapability("os", "Windows");
-            caps.setCapability("os_version", "7");
-            caps.setCapability("resolution", "1600x1200");
-            caps.setCapability("browserstack.debug", "true");
+//            // todo: read different capabilities from json config file.
+//            DesiredCapabilities caps = new DesiredCapabilities();
+//            caps.setCapability("browser", "Chrome");
+//            caps.setCapability("browser_version", "31.0");
+//            caps.setCapability("os", "Windows");
+//            caps.setCapability("os_version", "7");
+//            caps.setCapability("resolution", "1600x1200");
+//            caps.setCapability("browserstack.debug", "true");
 
             try {
-                WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(browserStackUrl), caps));
+                WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(browserStackUrl), desiredCapabilities));
             } catch (MalformedURLException e) {
                 throw new Error("Could not connect to BrowserStack with the given URL: " + browserStackUrl, e);
             }
