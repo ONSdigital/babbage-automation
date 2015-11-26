@@ -43,9 +43,7 @@ public class BrowserTestBase {
 
         // if the browser stack url is defined run against multiple browsers, else just run in chrome in development.
         if (StringUtils.isNotBlank(browserStackUrl)) {
-            return Arrays.asList(new Object[][]{
-                    getBrowserStackConfiguration()
-            });
+            return getBrowserStackConfiguration();
         } else {
             return Arrays.asList(new Object[][]{
                     {DesiredCapabilities.chrome()}
@@ -53,8 +51,8 @@ public class BrowserTestBase {
         }
     }
 
-    private static Object[] getBrowserStackConfiguration() {
-        List<DesiredCapabilities> capabilities = new ArrayList<>();
+    private static Collection<Object[]> getBrowserStackConfiguration() {
+        List<Object[]> capabilities = new ArrayList<>();
 
         DesiredCapabilities ieCapabilities = new DesiredCapabilities();
         ieCapabilities.setCapability("browser", "Chrome");
@@ -63,7 +61,7 @@ public class BrowserTestBase {
         ieCapabilities.setCapability("os_version", "7");
         ieCapabilities.setCapability("resolution", "1600x1200");
         ieCapabilities.setCapability("browserstack.debug", "true");
-        capabilities.add(ieCapabilities);
+        capabilities.add(new Object[]{ieCapabilities});
 
         DesiredCapabilities fireFoxWindows = new DesiredCapabilities();
         fireFoxWindows.setCapability("browser", "IE");
@@ -72,7 +70,7 @@ public class BrowserTestBase {
         fireFoxWindows.setCapability("os_version", "7");
         fireFoxWindows.setCapability("resolution", "1600x1200");
         fireFoxWindows.setCapability("browserstack.debug", "true");
-        capabilities.add(fireFoxWindows);
+        capabilities.add(new Object[]{fireFoxWindows});
 
         DesiredCapabilities safariOsx = new DesiredCapabilities();
         safariOsx.setCapability("browser", "safari");
@@ -80,9 +78,9 @@ public class BrowserTestBase {
         safariOsx.setCapability("os_version", "Yosemite");
         safariOsx.setCapability("resolution", "1600x1200");
         safariOsx.setCapability("browserstack.debug", "true");
-        capabilities.add(safariOsx);
+        capabilities.add(new Object[]{safariOsx});
 
-        return capabilities.toArray();
+        return capabilities;
     }
 
     @Before
