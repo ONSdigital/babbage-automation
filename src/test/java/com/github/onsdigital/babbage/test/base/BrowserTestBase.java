@@ -120,5 +120,6 @@ public class BrowserTestBase {
     @After
     public void tearDown() throws Exception {
         Bot.driver().quit();
+        WebDriverExtensionsContext.removeDriver();
     }
 }
