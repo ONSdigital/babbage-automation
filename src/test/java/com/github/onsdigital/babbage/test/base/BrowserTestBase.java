@@ -1,6 +1,7 @@
 package com.github.onsdigital.babbage.test.base;
 
 import com.github.onsdigital.babbage.test.Configuration;
+import com.github.onsdigital.babbage.test.ParallelParameterised;
 import com.github.webdriverextensions.Bot;
 import com.github.webdriverextensions.WebDriverExtensionsContext;
 import com.github.webdriverextensions.internal.junitrunner.DriverPathLoader;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@RunWith(Parameterized.class)
+@RunWith(ParallelParameterised.class)
 public class BrowserTestBase {
 
     @Parameterized.Parameters
