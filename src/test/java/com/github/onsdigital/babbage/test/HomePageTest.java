@@ -1,5 +1,6 @@
 package com.github.onsdigital.babbage.test;
 
+import com.github.onsdigital.babbage.test.base.BrowserTestBase;
 import com.github.onsdigital.babbage.test.page.HomePage;
 import com.github.webdriverextensions.Bot;
 import org.junit.Test;

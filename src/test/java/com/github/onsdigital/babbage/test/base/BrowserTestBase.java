@@ -1,5 +1,6 @@
-package com.github.onsdigital.babbage.test;
+package com.github.onsdigital.babbage.test.base;
 
+import com.github.onsdigital.babbage.test.Configuration;
 import com.github.webdriverextensions.Bot;
 import com.github.webdriverextensions.WebDriverExtensionsContext;
 import com.github.webdriverextensions.internal.junitrunner.DriverPathLoader;
@@ -15,8 +16,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @RunWith(Parameterized.class)
 public class BrowserTestBase {
@@ -41,13 +44,45 @@ public class BrowserTestBase {
         // if the browser stack url is defined run against multiple browsers, else just run in chrome in development.
         if (StringUtils.isNotBlank(browserStackUrl)) {
             return Arrays.asList(new Object[][]{
-                    {DesiredCapabilities.firefox()}, {DesiredCapabilities.chrome()}
+                    getBrowserStackConfiguration()
             });
         } else {
             return Arrays.asList(new Object[][]{
                     {DesiredCapabilities.chrome()}
             });
         }
+    }
+
+    private static Object[] getBrowserStackConfiguration() {
+        List<DesiredCapabilities> capabilities = new ArrayList<>();
+
+        DesiredCapabilities ieCapabilities = new DesiredCapabilities();
+        ieCapabilities.setCapability("browser", "Chrome");
+        ieCapabilities.setCapability("browser_version", "31.0");
+        ieCapabilities.setCapability("os", "Windows");
+        ieCapabilities.setCapability("os_version", "7");
+        ieCapabilities.setCapability("resolution", "1600x1200");
+        ieCapabilities.setCapability("browserstack.debug", "true");
+        capabilities.add(ieCapabilities);
+
+        DesiredCapabilities fireFoxWindows = new DesiredCapabilities();
+        fireFoxWindows.setCapability("browser", "IE");
+        ieCapabilities.setCapability("browser_version", "9.0");
+        fireFoxWindows.setCapability("os", "Windows");
+        fireFoxWindows.setCapability("os_version", "7");
+        fireFoxWindows.setCapability("resolution", "1600x1200");
+        fireFoxWindows.setCapability("browserstack.debug", "true");
+        capabilities.add(fireFoxWindows);
+
+        DesiredCapabilities safariOsx = new DesiredCapabilities();
+        safariOsx.setCapability("browser", "safari");
+        safariOsx.setCapability("os", "OS X");
+        safariOsx.setCapability("os_version", "Yosemite");
+        safariOsx.setCapability("resolution", "1600x1200");
+        safariOsx.setCapability("browserstack.debug", "true");
+        capabilities.add(safariOsx);
+
+        return capabilities.toArray();
     }
 
     @Before
@@ -74,19 +109,6 @@ public class BrowserTestBase {
         } else {
             WebDriverExtensionsContext.setDriver(new ChromeDriver(desiredCapabilities));
             Bot.driver().manage().window().setSize(new Dimension(1600, 1200));
-//            final String chromeDriverUrl = "http://localhost:9515"; // standard port for chrome driver
-//            try {
-//                ChromeOptions options = new ChromeOptions();
-//                DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
-//                desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
-//                WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(chromeDriverUrl), desiredCapabilities));
-//            } catch (MalformedURLException e) {
-//                throw new Error("Could not connect to ChromeDriver with the given URL: " + chromeDriverUrl, e);
-//            } catch (UnreachableBrowserException exception) {
-//                throw new Error("Could not find browser, are you running chrome driver?", exception);
-//            }
-//
-
         }
     }
 
