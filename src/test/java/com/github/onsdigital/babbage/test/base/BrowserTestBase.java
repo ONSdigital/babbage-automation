@@ -103,20 +103,9 @@ public class BrowserTestBase {
 
     @Before
     public void setUp() throws Exception {
-        System.out.println("BrowserTestBase.setup");
         String browserStackUrl = Configuration.getBrowserStackUrl();
 
         if (StringUtils.isNotBlank(browserStackUrl)) {
-
-//            // todo: read different capabilities from json config file.
-//            DesiredCapabilities caps = new DesiredCapabilities();
-//            caps.setCapability("browser", "Chrome");
-//            caps.setCapability("browser_version", "31.0");
-//            caps.setCapability("os", "Windows");
-//            caps.setCapability("os_version", "7");
-//            caps.setCapability("resolution", "1600x1200");
-//            caps.setCapability("browserstack.debug", "true");
-
             try {
                 WebDriverExtensionsContext.setDriver(new RemoteWebDriver(new URL(browserStackUrl), desiredCapabilities));
             } catch (MalformedURLException e) {
@@ -132,22 +121,4 @@ public class BrowserTestBase {
     public void tearDown() throws Exception {
         Bot.driver().quit();
     }
-
-    //    public static void main(String[] args) throws IOException {
-//
-//        // https://code.google.com/p/selenium/wiki/DesiredCapabilities
-//        DesiredCapabilities caps = new DesiredCapabilities();
-//        caps.setCapability("browser", "Chrome");
-//        caps.setCapability("browser_version", "31.0");
-//        caps.setCapability("os", "Windows");
-//        caps.setCapability("os_version", "7");
-//        caps.setCapability("resolution", "1600x1200");
-//        caps.setCapability("browserstack.debug", "true");
-//
-//        final String json = new GsonBuilder().setPrettyPrinting().create().toJson(caps);
-//
-//        FileUtils.write(new File("src/test/resources/config.json"), json);
-//
-//
-//    }
 }
