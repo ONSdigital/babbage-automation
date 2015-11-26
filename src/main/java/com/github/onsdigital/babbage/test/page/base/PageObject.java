@@ -3,7 +3,6 @@ package com.github.onsdigital.babbage.test.page.base;
 import com.github.webdriverextensions.Bot;
 import com.github.webdriverextensions.WebDriverExtensionFieldDecorator;
 import com.github.webdriverextensions.WebPage;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.PageFactory;
 
 /**

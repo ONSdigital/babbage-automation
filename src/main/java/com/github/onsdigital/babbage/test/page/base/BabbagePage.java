@@ -6,7 +6,10 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import java.nio.file.Paths;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static org.junit.Assert.fail;
 
 /**
  * Base class for all page objects that belong to Babbage.
@@ -32,8 +35,8 @@ public abstract class BabbagePage extends PageObject {
         return uri;
     }
 
-    public String getAbsoluteUri() {
-        return Paths.get(Configuration.getBabbageUrl()).resolve(uri).toString();
+    public URL getAbsoluteUri() throws MalformedURLException {
+        return new URL(Configuration.getBabbageUri(), uri);
     }
 
     /**
@@ -49,11 +52,16 @@ public abstract class BabbagePage extends PageObject {
 
     @Override
     public void open(Object... objects) {
-        System.out.println("BabbagePage.Open " + getAbsoluteUri());
-        Bot.open(getAbsoluteUri());
-        super.open();
-        checkForPrototypeModal();
-        assertIsOpen();
+        try {
+            System.out.println("BabbagePage.Open " + getAbsoluteUri().toString());
+            Bot.open(getAbsoluteUri().toString());
+            super.open();
+            checkForPrototypeModal();
+            assertIsOpen();
+        } catch (MalformedURLException e) {
+            fail();
+        }
+
     }
 
     @Override

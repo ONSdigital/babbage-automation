@@ -13,7 +13,6 @@ public class HomePageTest extends BrowserTestBase {
     @Test
     public void searchFromHomePage() {
         Bot.open(homePage);
-        assertCurrentUrlContains("ons");
         homePage.search("economy");
         System.out.println(Bot.driver().getCurrentUrl());
         assertCurrentUrlContains("economy");
@@ -22,9 +21,8 @@ public class HomePageTest extends BrowserTestBase {
     @Test
     public void searchCdidFromHomePage() {
         Bot.open(homePage);
-        assertCurrentUrlContains("ons");
         homePage.search("d7g7");
         System.out.println(Bot.driver().getCurrentUrl());
-        assertCurrentUrlContains("economy/inflationandpriceindices/timeseries/d7g7");
+        assertCurrentUrlContains("/timeseries/d7g7");
     }
 }
