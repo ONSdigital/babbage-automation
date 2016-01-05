@@ -10,10 +10,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -122,5 +127,14 @@ public class BrowserTestBase {
     public void tearDown() throws Exception {
         Bot.driver().quit();
         WebDriverExtensionsContext.removeDriver();
+    }
+
+    protected WebElement waitAndFind(By selector) {
+        try {
+            return (new WebDriverWait(Bot.driver(), 5)).until(ExpectedConditions.visibilityOfElementLocated(selector));
+        } catch (TimeoutException timeoutException) {
+            System.out.println(Bot.driver().getPageSource());
+            throw timeoutException;
+        }
     }
 }

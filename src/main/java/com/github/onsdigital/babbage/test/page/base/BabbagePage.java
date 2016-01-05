@@ -2,9 +2,13 @@ package com.github.onsdigital.babbage.test.page.base;
 
 import com.github.onsdigital.babbage.test.Configuration;
 import com.github.webdriverextensions.Bot;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,6 +76,8 @@ public abstract class BabbagePage extends PageObject {
     private void checkForPrototypeModal() {
         try {
             modalContinue.click();
+            WebDriverWait wait = new WebDriverWait(Bot.driver(), 5);
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("btn-modal-continue"))); //wait until modal closed to continue
         } catch (NoSuchElementException exception) {
             // do nothing - there is no modal to close.
         }

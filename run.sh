@@ -14,6 +14,8 @@ fi
 
 export BABBAGE_URL=$base_url
 
+echo $BABBAGE_URL
+
 echo Running tests against: ${base_url}
 
 mvn clean test
