@@ -45,14 +45,15 @@ public class HomePageTest extends BrowserTestBase {
     public void testAtoZHover() throws Exception {
         homePage.open();
         WebElement aTozItem = homePage.getAtoZ('x');
-        Color preHover = homePage.toColor(aTozItem.getCssValue("background"));
+
+        Color preHover = homePage.toColor(aTozItem);
 
         Actions action = new Actions(Bot.driver());
         action.moveToElement(aTozItem);
         action.perform();
 
         WebElement aTozHover = homePage.getAtoZ('x');
-        Color postHover = homePage.toColor(aTozHover.getCssValue("background"));
+        Color postHover = homePage.toColor(aTozHover);
 
         assertThat("AtoZ Colour should change for hover event.", preHover, is(not(postHover)));
     }

@@ -6,16 +6,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.awt.*;
+import java.awt.Color;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.github.webdriverextensions.Bot.driver;
 import static org.junit.Assert.fail;
 
 /**
@@ -24,7 +26,7 @@ import static org.junit.Assert.fail;
  */
 public abstract class BabbagePage extends PageObject {
 
-	private static final String RGB_REGEX =  "rgb\\([0-9]{1,3}, ?[0-9]{1,3}, ?[0-9]{1,3}\\)";
+	private static final String RGB_REGEX = "rgb\\([0-9]{1,3}, ?[0-9]{1,3}, ?[0-9]{1,3}\\)";
 
 	private String uri;
 
@@ -48,16 +50,16 @@ public abstract class BabbagePage extends PageObject {
 		return new URL(Configuration.getBabbageUri(), uri);
 	}
 
-    /**
-     * Run a search for the given query.
-     *
-     * @param query - The query to search for.
-     * @return - the search results page.
-     */
-    public void search(String query) {
-        Bot.type(query, search);
-        search.submit();
-    }
+	/**
+	 * Run a search for the given query.
+	 *
+	 * @param query - The query to search for.
+	 * @return - the search results page.
+	 */
+	public void search(String query) {
+		Bot.type(query, search);
+		search.submit();
+	}
 
 	@Override
 	public void open(Object... objects) {
@@ -73,10 +75,10 @@ public abstract class BabbagePage extends PageObject {
 
 	}
 
-    @Override
-    public void assertIsOpen(Object... objects) throws AssertionError {
-        Bot.assertIsDisplayed(search);
-    }
+	@Override
+	public void assertIsOpen(Object... objects) throws AssertionError {
+		Bot.assertIsDisplayed(search);
+	}
 
 	private void checkForPrototypeModal() {
 		try {
@@ -88,7 +90,9 @@ public abstract class BabbagePage extends PageObject {
 		}
 	}
 
-	public Color toColor(String value) {
+
+	public Color toColor(WebElement element) {
+		String value = element.getCssValue("background");
 		Matcher matcher = Pattern.compile(RGB_REGEX).matcher(value);
 		matcher.find();
 		String rgbStr = matcher.group(0);
@@ -100,19 +104,24 @@ public abstract class BabbagePage extends PageObject {
 		);
 	}
 
-    public static void ScrollTo(WebElement element, Integer offset) {
-        //TODO get add offset option instead of hard coding '112'
+	public static void ScrollTo(WebElement element, Integer offset) {
+		//TODO get add offset option instead of hard coding '112'
+		Integer elementPosition;
 
-        Integer elementPosition;
+		// get scroll position of button - check if custom offset argument being used
+		if (offset != null) {
+			elementPosition = element.getLocation().getY() - offset; // scroll position with custom offset
+		} else {
+			elementPosition = element.getLocation().getY(); // scroll position without any offset
+		}
 
-        // get scroll position of button - check if custom offset argument being used
-        if (offset != null) {
-            elementPosition = element.getLocation().getY() - offset; // scroll position with custom offset
-        } else {
-            elementPosition = element.getLocation().getY(); // scroll position without any offset
-        }
+		String jsScroll = String.format("window.scroll(0, %s)", elementPosition); // create js scroll function
+		((JavascriptExecutor) Bot.driver()).executeScript(jsScroll); //run js scroll function
+	}
 
-        String jsScroll = String.format("window.scroll(0, %s)", elementPosition); // create js scroll function
-        ((JavascriptExecutor) Bot.driver()).executeScript(jsScroll); //run js scroll function
-    }
+	public void hoverOverElement(WebElement target) {
+		Actions action = new Actions(driver());
+		action.moveToElement(target);
+		action.perform();
+	}
 }

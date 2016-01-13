@@ -2,59 +2,101 @@ package com.github.onsdigital.babbage.test;
 
 import com.github.onsdigital.babbage.test.base.BrowserTestBase;
 import com.github.onsdigital.babbage.test.page.AtoZPage;
-import com.github.webdriverextensions.Bot;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.List;
 
 import static com.github.webdriverextensions.Bot.assertTextMatches;
+import static com.github.webdriverextensions.Bot.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 
-/**
- * Created by dave on 1/7/16.
- */
 public class AtoZPageTest extends BrowserTestBase {
-
-	private String STATS_BULLITINS_REGEX = "[0-9]+ statistical bulletins( containing \'%s\'){0,1}";
-	private String STATS_BULLITINS_WITH_FILTER_REGEX = "[0-9]+ statistical bulletins containing \'%s\' that begin with the letter \'%s\'";
 
 	private static final String URI = "atoz";
 
 	private AtoZPage aToZPage = new AtoZPage(URI);
 
-	// TODO - this test requires an update to handlebars in babbage - fix single quotes.
+	// TODO test failing intermittently with stale element.
 	@Ignore
 	@Test
 	public void testGoToAtoZ() throws Exception {
-		String keyWord = "public";
+		AtoZSearchItem searchTarget = aToZPage.getAvailableAtoZSearch();
 		aToZPage.open();
-
-		String regex = String.format(STATS_BULLITINS_REGEX, keyWord.toLowerCase());
-		assertTextMatches(regex,  aToZPage.getSearchResultSummaryText());
-
-		aToZPage.enterKeyWordFilter(keyWord);
-
-		aToZPage.useAtoZFilter('C');
-		regex = String.format(STATS_BULLITINS_WITH_FILTER_REGEX, keyWord, "c");
-
-		assertTextMatches(regex,  aToZPage.getSearchResultSummaryText());
+		assertTextMatches(aToZPage.getResultTextRegex(null), aToZPage.getSearchResultSummaryText());
+		aToZPage.enterKeyWordFilter(searchTarget);
+		aToZPage.useAtoZFilter(searchTarget.getaToZFilter());
+		assertTextMatches(aToZPage.getResultTextRegex(searchTarget.getKeyword()), aToZPage.getSearchResultSummaryText());
 	}
 
+	/**
+	 * The the AtoZ Page hover functionality is correct for clickable a-to-z filter labels.
+	 */
 	@Test
-	public void testAtoZHover() throws Exception {
-		final char target = 'D';
+	public void testAtoZHoverClickable() throws Exception {
+		AtoZSearchItem availableSearch = aToZPage.getAvailableAtoZSearch();
+		System.out.println("keyword: " + availableSearch.getKeyword());
+
+		List<AtoZSearchItem> searchResults = aToZPage.getAtoZSearchResultsForKeyword(availableSearch.getKeyword());
+		List<Character> clickableAlphaFilters = aToZPage.getClickableAToZFiltersFromSearchResults(searchResults);
+
 		aToZPage.open();
+		aToZPage.enterKeyWordFilter(availableSearch);
 
-		WebElement hoverItem = aToZPage.getAToZItem(target);
-		Color preHover = aToZPage.toColor(hoverItem.getCssValue("background"));
-		aToZPage.hoverOverAtoZ(target);
+		for (char character : clickableAlphaFilters) {
+			System.out.println("clickable " + character);
 
-		Color hovering = aToZPage.toColor(aToZPage.getAToZItem(target).getCssValue("background"));
+			// Verify the pre hover behaviour.
+			WebElement filterLabel = aToZPage.getAToZLabel(character);
+			Color preHover = aToZPage.toColor(filterLabel);
+			assertThat(String.format("Incorrect color for clickable aToz filter '%s'", character),
+					preHover, equalTo(AtoZPage.ATOZ_CLICKABLE_PRE_HOVER_COLOR));
 
-		Bot.assertThat("A to Z item did not change color while being hovered over.", preHover, is(not(hovering)));
+			// Verify the hover behaviour.
+			aToZPage.hoverOverAtoZ(character);
+			filterLabel = aToZPage.getAToZLabel(character);
+			Color hoverColor = aToZPage.toColor(filterLabel);
+
+			assertThat(String.format("Incorrect hover color for clickable aToz filter '%s'", character),
+					hoverColor, equalTo(AtoZPage.ATOZ_CLICKABLE_HOVER_COLOR));
+		}
+	}
+
+	/**
+	 * The the AtoZ Page hover functionality is correct for non-clickable a-to-z filter labels.
+	 */
+	@Test
+	public void testAtoZHoverNonClickable() throws Exception {
+		AtoZSearchItem availableAtoZSearch = aToZPage.getAvailableAtoZSearch();
+		System.out.println("keyword" + availableAtoZSearch.getKeyword());
+
+		List<AtoZSearchItem> searchResults = aToZPage.getAtoZSearchResultsForKeyword(availableAtoZSearch.getKeyword());
+		List<Character> nonClickableAlphaFilters = aToZPage.getNonClickableAToZFiltersFromSearchResults(searchResults);
+
+		aToZPage.open();
+		aToZPage.enterKeyWordFilter(availableAtoZSearch);
+
+		for (char alpha : nonClickableAlphaFilters) {
+			WebElement label = aToZPage.getAToZLabel(alpha);
+			WebElement input = aToZPage.getAToZInput(Character.toLowerCase(alpha));
+
+			assertThat(alpha + " should not be clickable.", Boolean.valueOf(input.getAttribute("disabled")), is(true));
+			assertThat(alpha + " is not clickable - cursor should not be allowed.", label.getCssValue("cursor"),
+					equalTo("not-allowed"));
+
+			Color initialColor = aToZPage.toColor(label);
+			assertThat(alpha + " label color incorrect for non clickable item.", initialColor,
+					equalTo(AtoZPage.ATOZ_NON_CLICKABLE_COLOR));
+
+			aToZPage.hoverOverElement(label);
+
+			Color hoveringColor = aToZPage.toColor(aToZPage.getAToZLabel(alpha));
+			assertThat(alpha + " is non clickable color should not change on hover..", hoveringColor,
+					equalTo(AtoZPage.ATOZ_NON_CLICKABLE_COLOR));
+		}
 	}
 
 }
