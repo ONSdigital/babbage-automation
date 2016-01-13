@@ -29,7 +29,7 @@ public class TilesTest extends BrowserTestBase {
 
         // Hover on element with enhanced class on it
         String tileBg = tileElement.getCssValue("background-color"); // Store original tile colour, pre-hover
-        actions.moveToElement(tileElement).build().perform(); //Delayed hover on tile, to make sure js enhanced TODO - make this action reusable ( ie 'hoverOn(clickableWrap)' );
+        actions.moveToElement(tileElement).build().perform(); //Delayed hover on tile, to make sure js enhanced
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(hoverClass)));
         String tileBgHover = tileElement.getCssValue("background-color"); // Store tile colour on hover
         Assert.assertNotEquals(tileBg, tileBgHover); // Check pre and post-hover colours are different

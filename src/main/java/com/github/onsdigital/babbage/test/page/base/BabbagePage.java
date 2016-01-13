@@ -3,6 +3,7 @@ package com.github.onsdigital.babbage.test.page.base;
 import com.github.onsdigital.babbage.test.Configuration;
 import com.github.webdriverextensions.Bot;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -98,4 +99,20 @@ public abstract class BabbagePage extends PageObject {
 				Integer.parseInt(temp[2].trim())
 		);
 	}
+
+    public static void ScrollTo(WebElement element, Integer offset) {
+        //TODO get add offset option instead of hard coding '112'
+
+        Integer elementPosition;
+
+        // get scroll position of button - check if custom offset argument being used
+        if (offset != null) {
+            elementPosition = element.getLocation().getY() - offset; // scroll position with custom offset
+        } else {
+            elementPosition = element.getLocation().getY(); // scroll position without any offset
+        }
+
+        String jsScroll = String.format("window.scroll(0, %s)", elementPosition); // create js scroll function
+        ((JavascriptExecutor) Bot.driver()).executeScript(jsScroll); //run js scroll function
+    }
 }

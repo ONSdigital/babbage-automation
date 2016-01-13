@@ -10,11 +10,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -136,5 +134,13 @@ public class BrowserTestBase {
             System.out.println(Bot.driver().getPageSource());
             throw timeoutException;
         }
+    }
+
+    public void hoverOverElement(WebElement element) {
+        // Create new action
+        Actions actions = new Actions(Bot.driver());
+
+        // Hover on element with enhanced class on it
+        actions.moveToElement(element).build().perform(); //Delayed hover on tile, to make sure js enhanced
     }
 }
