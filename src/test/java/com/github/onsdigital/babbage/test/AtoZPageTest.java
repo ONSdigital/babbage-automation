@@ -20,7 +20,7 @@ public class AtoZPageTest extends BrowserTestBase {
 
 	private AtoZPage aToZPage = new AtoZPage(URI);
 
-	// TODO test failing intermittently with stale element.
+	// TODO test failing intermittently with stale element error.
 	@Ignore
 	@Test
 	public void testGoToAtoZ() throws Exception {
