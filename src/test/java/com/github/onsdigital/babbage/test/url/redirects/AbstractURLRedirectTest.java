@@ -1,0 +1,100 @@
+package com.github.onsdigital.babbage.test.url.redirects;
+
+import au.com.bytecode.opencsv.CSVReader;
+import com.github.onsdigital.babbage.test.Configuration;
+import com.github.webdriverextensions.Bot;
+import com.github.webdriverextensions.WebDriverExtensionsContext;
+import com.github.webdriverextensions.internal.junitrunner.DriverPathLoader;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * Created by dave on 1/15/16.
+ */
+@RunWith(Parameterized.class)
+public abstract class AbstractURLRedirectTest {
+
+	@Parameterized.Parameter
+	public String currentResourceURL;
+
+	@Parameterized.Parameter(value = 1)
+	public String newResourceURL;
+
+	static {
+		// invoke the framework method to set the driver paths as expected.
+		DriverPathLoader.loadDriverPaths(null);
+	}
+
+	@BeforeClass
+	public static void setUp() {
+		System.out.println("Running URL Redirect tests (Why not get a cup of tea... this could take a while).");
+
+		DesiredCapabilities chromeWindows = new DesiredCapabilities();
+		chromeWindows.setCapability("browser", "Chrome");
+		chromeWindows.setCapability("browser_version", "31.0");
+		chromeWindows.setCapability("os", "Windows");
+		chromeWindows.setCapability("os_version", "7");
+		chromeWindows.setCapability("browserstack.debug", "true");
+
+		WebDriverExtensionsContext.setDriver(new ChromeDriver(chromeWindows));
+		Bot.driver().manage().window().setSize(new Dimension(1600, 1200));
+	}
+
+	@AfterClass
+	public static void cleanUp() {
+		Bot.driver().quit();
+		WebDriverExtensionsContext.removeDriver();
+	}
+
+	/**
+	 *
+	 */
+	public static Collection<Object[]> getParameters(Reader reader) {
+		List<Object[]> result = new ArrayList<>();
+
+		try (
+				CSVReader csvReader = new CSVReader(reader)
+		) {
+			String[] mapping;
+			while ((mapping = csvReader.readNext()) != null) {
+				result.add(new Object[] {mapping[0], mapping[1]});
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
+	}
+
+	@Test
+	public void testRedirect() throws Exception {
+		String targetUrl = getTargetURL();
+		Bot.open(getTargetURL());
+
+		URL expected = new URL(Configuration.getBabbageUri().toString() + newResourceURL);
+		URL actual = new URL(Bot.driver().getCurrentUrl());
+
+		System.out.println(getRedirectType() + " Redirect: " + targetUrl + " => " + actual.toString());
+		String errorMsg = String.format("Incorrect redirect. Expected \n\t'%s' \nfor \n\t'%s'.", expected.toString(), actual.toString());
+		verifyRedirect(errorMsg, actual, expected);
+	}
+
+	public abstract String getTargetURL() throws MalformedURLException;
+
+	public abstract String getRedirectType();
+
+	public abstract void verifyRedirect(String errorMsg, URL actual, URL expected);
+}
