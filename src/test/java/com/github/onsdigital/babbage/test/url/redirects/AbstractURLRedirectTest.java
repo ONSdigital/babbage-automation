@@ -10,9 +10,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.Reader;
 import java.net.MalformedURLException;
@@ -84,8 +88,25 @@ public abstract class AbstractURLRedirectTest {
 		String targetUrl = getTargetURL();
 		Bot.open(getTargetURL());
 
-		URL expected = new URL(Configuration.getBabbageUri().toString() + newResourceURL);
-		URL actual = new URL(Bot.driver().getCurrentUrl());
+		try {
+			WebElement modalContinue = Bot.driver().findElement(By.className("btn-modal-continue"));
+			modalContinue.click();
+			WebDriverWait wait = new WebDriverWait(Bot.driver(), 5);
+			wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("btn-modal-continue")));
+		} catch (Exception ex) {
+			// if modal is not there ignore error and continue.
+		}
+
+		URL expected = null;
+		URL actual = null;
+
+		try {
+			expected = new URL(Configuration.getBabbageUri().toString() + newResourceURL);
+			actual = new URL(Bot.driver().getCurrentUrl());
+		} catch (MalformedURLException ex) {
+			System.out.println("Failed to create URL for " + Bot.driver().getCurrentUrl());
+			throw new RuntimeException("Failed to create URL for " + Bot.driver().getCurrentUrl(), ex);
+		}
 
 		System.out.println(getRedirectType() + " Redirect: " + targetUrl + " => " + actual.toString());
 		String errorMsg = String.format("Incorrect redirect. Expected \n\t'%s' \nfor \n\t'%s'.", expected.toString(), actual.toString());

@@ -51,5 +51,10 @@ public class TaxonomyRedirectsTest extends AbstractURLRedirectTest {
 
 	public void verifyRedirect(String errorMsg, URL actual, URL expected) {
 		assertThat(errorMsg, actual.getPath(), equalTo(expected.getPath()));
+
+		// Ignore host for this specific path - redirecting to beta.
+		if (!expected.getPath().startsWith("/economy/inflationandpriceindices")) {
+			assertThat("Host is in correct.", actual.getHost(), equalTo(expected.getHost()));
+		}
 	}
 }

@@ -1,7 +1,6 @@
 package com.github.onsdigital.babbage.test.url.redirects;
 
 import com.github.onsdigital.babbage.test.Configuration;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -19,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Test the General URL redirects are handled correctly.
  */
-@Ignore(value = "Test broken needs further investigation")
 @RunWith(Parameterized.class)
 public class NonTaxonomyRedirectsTest extends AbstractURLRedirectTest {
 
@@ -52,5 +50,6 @@ public class NonTaxonomyRedirectsTest extends AbstractURLRedirectTest {
 	@Override
 	public void verifyRedirect(String errorMsg, URL actual, URL expected) {
 		assertThat(errorMsg, actual.getFile(), equalTo(expected.getFile()));
+		assertThat("Host incorrect.", actual.getHost(), equalTo(expected.getHost()));
 	}
 }
