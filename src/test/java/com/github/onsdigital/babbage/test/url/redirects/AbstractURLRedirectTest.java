@@ -18,18 +18,27 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
 /**
  * Created by dave on 1/15/16.
  */
 @RunWith(Parameterized.class)
 public abstract class AbstractURLRedirectTest {
+
+	protected static final List<String> BROKEN_LINKS = new ArrayList<>();
 
 	@Parameterized.Parameter
 	public String currentResourceURL;
@@ -74,6 +83,7 @@ public abstract class AbstractURLRedirectTest {
 		) {
 			String[] mapping;
 			while ((mapping = csvReader.readNext()) != null) {
+				//result.add(new Object[] {URLDecoder.decode(mapping[0]), mapping[1]});
 				result.add(new Object[] {mapping[0], mapping[1]});
 			}
 
@@ -111,6 +121,28 @@ public abstract class AbstractURLRedirectTest {
 		System.out.println(getRedirectType() + " Redirect: " + targetUrl + " => " + actual.toString());
 		String errorMsg = String.format("Incorrect redirect. Expected \n\t'%s' \nfor \n\t'%s'.", expected.toString(), actual.toString());
 		verifyRedirect(errorMsg, actual, expected);
+	}
+
+	protected void verifyResponseCode(URL actual) {
+		try {
+			HttpURLConnection connection = (HttpURLConnection)actual.openConnection();
+			connection.setRequestMethod("GET");
+			connection.connect();
+
+			if (connection.getResponseCode() != Response.Status.OK.getStatusCode()) {
+				BROKEN_LINKS.add(currentResourceURL);
+			}
+			assertThat("Response code incorrect.", connection.getResponseCode(), equalTo(Response.Status.OK.getStatusCode()));
+		} catch (IOException e) {
+			fail("Whoops");
+		}
+	}
+
+	@AfterClass
+	public static void debug() {
+		System.out.println("\n");
+		BROKEN_LINKS.stream().forEach(link -> System.out.println(link));
+		System.out.println("\n");
 	}
 
 	public abstract String getTargetURL() throws MalformedURLException;

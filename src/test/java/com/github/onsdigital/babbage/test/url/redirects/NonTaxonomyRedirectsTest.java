@@ -49,6 +49,10 @@ public class NonTaxonomyRedirectsTest extends AbstractURLRedirectTest {
 
 	@Override
 	public void verifyRedirect(String errorMsg, URL actual, URL expected) {
+		/**
+		 *  TODO - Uncomment this to check that response status code is 200 NOTE: This will cause tests to fail if the content for does not exists on the environment being tested.
+		 */
+		//verifyResponseCode(actual);
 		assertThat(errorMsg, actual.getFile(), equalTo(expected.getFile()));
 		assertThat("Host incorrect.", actual.getHost(), equalTo(expected.getHost()));
 	}

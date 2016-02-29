@@ -50,6 +50,7 @@ public class TaxonomyRedirectsTest extends AbstractURLRedirectTest {
 	}
 
 	public void verifyRedirect(String errorMsg, URL actual, URL expected) {
+		verifyResponseCode(actual);
 		assertThat(errorMsg, actual.getPath(), equalTo(expected.getPath()));
 
 		// Ignore host for this specific path - redirecting to beta.
